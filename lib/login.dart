@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_project/auth.dart';
 import 'package:my_project/forgot_password.dart';
+import 'package:my_project/model.dart';
 import 'package:my_project/sign_up.dart';
+import 'package:my_project/staticdata.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = '/login';
@@ -39,8 +42,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  String _email = '';
-  String _password = '';
+  final _email = TextEditingController();
+  final _password = TextEditingController();
   var height, width;
   @override
   Widget build(BuildContext context) {
@@ -97,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       onChanged: (value) {
-                        _email = value;
+                        _email.text = value;
                       },
                     ),
                   ),
@@ -142,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       onChanged: (value) {
-                        _password = value;
+                        _password.text = value;
                       },
                     ),
                   ),
@@ -175,29 +178,43 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      try {
-                        UserCredential? userCredential = await _auth
-                            .signInWithEmailAndPassword(_email, _password);
-                        if (userCredential != null) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Invalid Credentials! Please try Again")));
-                        }
-                      } on FirebaseAuthException catch (e) {
-                        String message = "Login Failed";
-                        if (e.code == 'user-not-found') {
-                          message = 'No user found for that email';
-                        } else if (e.code == 'wrong-password') {
-                          message = "Wrong Password!";
-                        } else {
-                          message = e.message ?? 'Something went wrong';
-                        }
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(message)));
+                      QuerySnapshot snapshot = await FirebaseFirestore.instance
+                          .collection("users")
+                          .where("email", isEqualTo: _email.text)
+                          .where("password", isEqualTo: _password.text)
+                          .get();
+                      if (snapshot.docs.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Email or Password is incorrect!")));
+                      } else {
+                        UserModel model = UserModel.fromMap(
+                            snapshot.docs[0].data() as Map<String, dynamic>);
+                        print(model);
+                        StaticData.userModel = model;
                       }
+                      // try {
+                      //   UserCredential? userCredential = await _auth
+                      //       .signInWithEmailAndPassword(_email.text, _password.text);
+                      //   if (userCredential != null) {
+                      //     Navigator.pushReplacementNamed(context, '/home');
+                      //   } else {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //         const SnackBar(
+                      //             content: Text(
+                      //                 "Invalid Credentials! Please try Again")));
+                      //   }
+                      // } on FirebaseAuthException catch (e) {
+                      //   String message = "Login Failed";
+                      //   if (e.code == 'user-not-found') {
+                      //     message = 'No user found for that email';
+                      //   } else if (e.code == 'wrong-password') {
+                      //     message = "Wrong Password!";
+                      //   } else {
+                      //     message = e.message ?? 'Something went wrong';
+                      //   }
+                      //   ScaffoldMessenger.of(context)
+                      //       .showSnackBar(SnackBar(content: Text(message)));
+                      // }
                     }
                   },
                   style: ElevatedButton.styleFrom(

@@ -17,13 +17,23 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
-  String _name = '';
-  String _email = '';
-  String _password = '';
-  String _number = '';
-  String _confirmpassword = '';
+  final _name = TextEditingController();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _number = TextEditingController();
+  final _confirmpassword = TextEditingController();
   bool _isPasswordValid = false;
   var height, width;
+
+  // @override
+  //   void dispose(){
+  //     _name.dispose();
+  // _email.dispose();
+  // _number.dispose();
+  // _password.dispose();
+  // _confirmpassword.dispose();
+  // super.dispose();
+  //   }
 
   bool validatePassword(String password) {
     final hasMinLength = password.length >= 8;
@@ -36,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _formKey.currentState!.save();
     final _isValid = _formKey.currentState!.validate();
     if (!_isValid) return;
-    if (!validatePassword(_password)) {
+    if (!validatePassword(_password.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Password is not formatted correctly")));
       return;
@@ -48,13 +58,13 @@ class _SignUpPageState extends State<SignUpPage> {
     }
     try {
       UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: _email, password: _password);
+          .createUserWithEmailAndPassword(email: _email.text, password: _password.text);
       String userId = userCredential.user!.uid;
       UserModel model = UserModel(
-        email: _email,
-        name: _name,
-        password: _password,
-        number: _number,
+        email: _email.text,
+        name: _name.text,
+        password: _password.text,
+        number: _number.text,
         userID: userId,
       );
       await FirebaseFirestore.instance
@@ -132,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       validator: (value) => value!.isEmpty
                           ? 'Fill all the required fields'
                           : null,
-                      onChanged: (value) => _name = value,
+                      controller: _name,
                     ),
                   ),
                   SizedBox(
@@ -151,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       validator: (value) => value!.isEmpty
                           ? 'Fill all the required fields'
                           : null,
-                      onChanged: (value) => _number = value,
+                      controller: _number,
                     ),
                   ),
                   SizedBox(
@@ -173,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         if (!value.contains('@')) return 'Invalid email format';
                         return null;
                       },
-                      onChanged: (value) => _email = value.trim().toLowerCase(),
+                      controller: _email,
                     ),
                   ),
                   SizedBox(
@@ -206,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ? 'Fill all the required fields'
                             : null,
                         onChanged: (value) {
-                          _password = value;
+                          _password.text = value;
                           setState(() {
                             _isPasswordValid = validatePassword(value);
                           });
@@ -259,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               ))),
                       validator: (value) =>
                           value!.isEmpty ? 'Fill the require field' : null,
-                      onChanged: (value) => _confirmpassword = value,
+                      controller: _confirmpassword,
                     ),
                   ),
                   SizedBox(

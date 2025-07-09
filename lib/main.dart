@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:my_project/dashboard.dart';
 import 'package:my_project/home.dart';
 import 'package:my_project/login.dart';
 import 'auth.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData) {
-            return HomePage();
+            return Dashboard();
           } else {
             return const LoginPage();
           }
