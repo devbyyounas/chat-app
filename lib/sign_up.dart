@@ -25,15 +25,15 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isPasswordValid = false;
   var height, width;
 
-  // @override
-  //   void dispose(){
-  //     _name.dispose();
-  // _email.dispose();
-  // _number.dispose();
-  // _password.dispose();
-  // _confirmpassword.dispose();
-  // super.dispose();
-  //   }
+  @override
+    void dispose(){
+      _name.dispose();
+  _email.dispose();
+  _number.dispose();
+  _password.dispose();
+  _confirmpassword.dispose();
+  super.dispose();
+    }
 
   bool validatePassword(String password) {
     final hasMinLength = password.length >= 8;
@@ -51,14 +51,15 @@ class _SignUpPageState extends State<SignUpPage> {
           SnackBar(content: Text("Password is not formatted correctly")));
       return;
     }
-    if (_password != _confirmpassword) {
+    if (_password.text != _confirmpassword.text) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Password doesn't match")));
       return;
     }
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: _email.text, password: _password.text);
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+              email: _email.text, password: _password.text);
       String userId = userCredential.user!.uid;
       UserModel model = UserModel(
         email: _email.text,

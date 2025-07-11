@@ -14,15 +14,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<UserModel> allUSers = [];
+  List<UserModel> allUsers = [];
   getAllUsers() async {
-    allUSers.clear();
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection("users").get();
+    allUsers.clear();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("Users")
+        .where("userID", isNotEqualTo: StaticData.userModel!.userID)
+        .get();
     for (var user in snapshot.docs) {
       UserModel model = UserModel.fromMap(user.data() as Map<String, dynamic>);
       setState(() {
-        allUSers.add(model);
+        allUsers.add(model);
       });
     }
   }
@@ -282,28 +284,28 @@ class _HomePageState extends State<HomePage> {
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30))),
               child: ListView.builder(
-                  itemCount: allUSers.length,
+                  itemCount: allUsers.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                       leading: const CircleAvatar(
                         radius: 30,
                       ),
-                      title: Text(allUSers[index].name!),
-                      subtitle: Text(allUSers[index].email!),
+                      title: Text(allUsers[index].name!),
+                      subtitle: Text(allUsers[index].email!),
                       trailing: ElevatedButton(
                           onPressed: () async {
                             Uuid uid = Uuid();
-                            String uniquId = uid.v4();
+                            String uniqueId = uid.v4();
                             SendRequest sendRequest = SendRequest(
-                              receiverId: allUSers[index].userID,
-                              receiverName: allUSers[index].name,
+                              receiverId: allUsers[index].userID,
+                              receiverName: allUsers[index].name,
                               senderName: StaticData.userModel!.name,
                               senderId: StaticData.userModel!.userID,
-                              uniqueId: uniquId,
+                              uniqueId: uniqueId,
                             );
                             await FirebaseFirestore.instance
                                 .collection("request")
-                                .doc(uniquId)
+                                .doc(uniqueId)
                                 .set(sendRequest.toMap());
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text("Request send!!")));

@@ -99,9 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        _email.text = value;
-                      },
+                      controller: _email,
                     ),
                   ),
                 ),
@@ -144,9 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        _password.text = value;
-                      },
+                      controller: _password,
                     ),
                   ),
                 ),
@@ -179,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       QuerySnapshot snapshot = await FirebaseFirestore.instance
-                          .collection("users")
+                          .collection("Users")
                           .where("email", isEqualTo: _email.text)
                           .where("password", isEqualTo: _password.text)
                           .get();
@@ -191,12 +187,13 @@ class _LoginPageState extends State<LoginPage> {
                             snapshot.docs[0].data() as Map<String, dynamic>);
                         print(model);
                         StaticData.userModel = model;
+                        Navigator.pushReplacementNamed(context, '/home');
                       }
                       // try {
                       //   UserCredential? userCredential = await _auth
                       //       .signInWithEmailAndPassword(_email.text, _password.text);
                       //   if (userCredential != null) {
-                      //     Navigator.pushReplacementNamed(context, '/home');
+
                       //   } else {
                       //     ScaffoldMessenger.of(context).showSnackBar(
                       //         const SnackBar(

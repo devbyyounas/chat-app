@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_project/dashboard.dart';
 import 'package:my_project/home.dart';
 import 'package:my_project/login.dart';
+import 'package:my_project/sign_up.dart';
 import 'auth.dart';
 
 void main() async {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData) {
-            return Dashboard();
+            return SignUpPage();
           } else {
             return const LoginPage();
           }
