@@ -26,14 +26,14 @@ class _SignUpPageState extends State<SignUpPage> {
   var height, width;
 
   @override
-    void dispose(){
-      _name.dispose();
-  _email.dispose();
-  _number.dispose();
-  _password.dispose();
-  _confirmpassword.dispose();
-  super.dispose();
-    }
+  void dispose() {
+    _name.dispose();
+    _email.dispose();
+    _number.dispose();
+    _password.dispose();
+    _confirmpassword.dispose();
+    super.dispose();
+  }
 
   bool validatePassword(String password) {
     final hasMinLength = password.length >= 8;

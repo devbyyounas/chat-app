@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_project/all_requests.dart';
 import 'package:my_project/model.dart';
 import 'package:my_project/sendreq_model.dart';
 import 'package:my_project/staticdata.dart';
@@ -48,13 +49,25 @@ class _HomePageState extends State<HomePage> {
         leading: const Icon(
           Icons.search,
         ),
-        title: const Center(
+        title: Center(
           child: Text(
-            "Home",
+            "${StaticData.userModel!.userID}",
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
-        actions: const [CircleAvatar()],
+        actions: [
+          InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AllRequestPage()));
+              },
+              child: const CircleAvatar(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ))
+        ],
       ),
       body: Stack(
         children: [
@@ -276,7 +289,7 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: height * 0.65,
+              height: height * 0.7,
               width: width,
               decoration: const BoxDecoration(
                   color: Colors.white,

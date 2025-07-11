@@ -50,6 +50,7 @@ class _DashboardState extends State<Dashboard> {
               child: Container(
                 height: height * 0.1,
                 width: width,
+                color: Colors.amber,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
