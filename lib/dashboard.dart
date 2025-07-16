@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:my_project/accounts.dart';
 import 'package:my_project/callpage.dart';
 import 'package:my_project/home.dart';
@@ -30,13 +28,13 @@ class _DashboardState extends State<Dashboard> {
           children: [
             Expanded(
               child: Container(
-                height: height,
+                // height: height,
                 width: width,
                 color: Colors.amber,
                 child: PageView(
                   controller: controller,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: const [
                     HomePage(),
                     CallPage(),
                     AccountPage(),
@@ -45,52 +43,49 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
-            Card(
-              elevation: 2,
-              child: Container(
-                height: height * 0.1,
-                width: width,
-                color: Colors.amber,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          controller.jumpToPage(0);
-                        },
-                        child: Icon(
-                          Icons.message,
-                          color: index == 0 ? Colors.black : Colors.grey,
-                        )),
-                    InkWell(
+            Container(
+              height: height * 0.1,
+              width: width,
+              color: Colors.amber,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InkWell(
                       onTap: () {
-                        controller.jumpToPage(1);
+                        controller.jumpToPage(0);
                       },
                       child: Icon(
-                        Icons.call,
-                        color: index == 1 ? Colors.black : Colors.grey,
-                      ),
+                        Icons.message,
+                        color: index == 0 ? Colors.black : Colors.grey,
+                      )),
+                  InkWell(
+                    onTap: () {
+                      controller.jumpToPage(1);
+                    },
+                    child: Icon(
+                      Icons.call,
+                      color: index == 1 ? Colors.black : Colors.grey,
                     ),
-                    InkWell(
-                      onTap: () {
-                        controller.jumpToPage(2);
-                      },
-                      child: Icon(
-                        Icons.account_circle,
-                        color: index == 2 ? Colors.black : Colors.grey,
-                      ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      controller.jumpToPage(2);
+                    },
+                    child: Icon(
+                      Icons.account_circle,
+                      color: index == 2 ? Colors.black : Colors.grey,
                     ),
-                    InkWell(
-                      onTap: () {
-                        controller.jumpToPage(2);
-                      },
-                      child: Icon(
-                        Icons.settings,
-                        color: index == 2 ? Colors.black : Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      controller.jumpToPage(2);
+                    },
+                    child: Icon(
+                      Icons.settings,
+                      color: index == 2 ? Colors.black : Colors.grey,
+                    ),
+                  )
+                ],
               ),
             )
           ],
