@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_project/all_requests.dart';
+import 'package:my_project/friends_model.dart';
 import 'package:my_project/model.dart';
 import 'package:my_project/sendreq_model.dart';
 import 'package:my_project/staticdata.dart';
 import 'package:uuid/uuid.dart';
 
 class HomePage extends StatefulWidget {
-  static const String routeName = '/home';
+  static const String routeName = '/Dashboard';
   const HomePage({super.key});
 
   @override
@@ -15,24 +16,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<UserModel> allUsers = [];
-  getAllUsers() async {
-    allUsers.clear();
+  List<FriendModel> allFriend = [];
+  getAllFriend() async {
+    allFriend.clear();
     QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection("Users")
-        .where("userID", isNotEqualTo: StaticData.userModel!.userID)
+        .collection("Friends")
+        .where("userID", isEqualTo: StaticData.userModel!.userID)
         .get();
     for (var user in snapshot.docs) {
-      UserModel model = UserModel.fromMap(user.data() as Map<String, dynamic>);
+      FriendModel model =
+          FriendModel.fromMap(user.data() as Map<String, dynamic>);
       setState(() {
-        allUsers.add(model);
+        allFriend.add(model);
       });
     }
   }
 
   @override
   void initState() {
-    getAllUsers();
+    getAllFriend();
     super.initState();
   }
 
@@ -290,43 +292,53 @@ class _HomePageState extends State<HomePage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: height * 0.7,
+                height: height * 0.6,
                 width: width,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30))),
-                child: ListView.builder(
-                    itemCount: allUsers.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          radius: 30,
-                        ),
-                        title: Text(allUsers[index].name!),
-                        subtitle: Text(allUsers[index].email!),
-                        trailing: ElevatedButton(
-                            onPressed: () async {
-                              Uuid uid = Uuid();
-                              String uniqueId = uid.v4();
-                              SendRequest sendRequest = SendRequest(
-                                receiverId: allUsers[index].userID,
-                                receiverName: allUsers[index].name,
-                                senderName: StaticData.userModel!.name,
-                                senderId: StaticData.userModel!.userID,
-                                uniqueId: uniqueId,
-                              );
-                              await FirebaseFirestore.instance
-                                  .collection("request")
-                                  .doc(uniqueId)
-                                  .set(sendRequest.toMap());
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Request send!!")));
-                            },
-                            child: const Text("Req send")),
-                      );
-                    }),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: allFriend.isEmpty
+                      ? const Center(
+                          child: Text(
+                          "No friend Found!",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ))
+                      : ListView.builder(
+                          itemCount: allFriend.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: const CircleAvatar(
+                                radius: 30,
+                              ),
+                              title: Text(allFriend[index].recieverName ?? ''),
+                              // subtitle: Text(allFriend[index].email!),
+                              // trailing: ElevatedButton(
+                              //     onPressed: () async {
+                              //       Uuid uid = Uuid();
+                              //       String uniqueId = uid.v4();
+                              //       SendRequest sendRequest = SendRequest(
+                              //         receiverId: allUsers[index].userID,
+                              //         receiverName: allUsers[index].name,
+                              //         senderName: StaticData.userModel!.name,
+                              //         senderId: StaticData.userModel!.userID,
+                              //         uniqueId: uniqueId,
+                              //       );
+                              //       await FirebaseFirestore.instance
+                              //           .collection("request")
+                              //           .doc(uniqueId)
+                              //           .set(sendRequest.toMap());
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //           SnackBar(content: Text("Request send!!")));
+                              //     },
+                              //     child: const Text("Req send")),
+                            );
+                          }),
+                ),
               ),
             )
           ],

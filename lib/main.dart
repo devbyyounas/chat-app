@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         LoginPage.routeName: (BuildContext context) => const LoginPage(),
-        HomePage.routeName: (BuildContext context) => HomePage(),
+        HomePage.routeName: (BuildContext context) => const Dashboard(),
       },
     );
   }

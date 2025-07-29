@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_project/auth.dart';
+import 'package:my_project/dashboard.dart';
 import 'package:my_project/forgot_password.dart';
 import 'package:my_project/model.dart';
 import 'package:my_project/sign_up.dart';
@@ -187,7 +188,10 @@ class _LoginPageState extends State<LoginPage> {
                             snapshot.docs[0].data() as Map<String, dynamic>);
                         print(model);
                         StaticData.userModel = model;
-                        Navigator.pushReplacementNamed(context, '/home');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Dashboard()));
                       }
                       // try {
                       //   UserCredential? userCredential = await _auth

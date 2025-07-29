@@ -30,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
               child: Container(
                 // height: height,
                 width: width,
-                color: Colors.amber,
+                // color: Colors.amber,
                 child: PageView(
                   controller: controller,
                   physics: const NeverScrollableScrollPhysics(),

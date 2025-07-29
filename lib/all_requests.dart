@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_project/dashboard.dart';
 import 'package:my_project/friends_model.dart';
 import 'package:my_project/home.dart';
 import 'package:my_project/login.dart';
@@ -15,9 +16,9 @@ class AllRequestPage extends StatefulWidget {
 }
 
 class _AllRequestPageState extends State<AllRequestPage> {
-  List<SendRequest> getAllRequest = [];
+  List<SendRequest> allRequest = [];
   void getAllRequests() async {
-    getAllRequest.clear();
+    allRequest.clear();
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("request")
         .where("receiverId", isEqualTo: StaticData.userModel!.userID)
@@ -26,7 +27,7 @@ class _AllRequestPageState extends State<AllRequestPage> {
       SendRequest model =
           SendRequest.fromMap(user.data() as Map<String, dynamic>);
       setState(() {
-        getAllRequest.add(model);
+        allRequest.add(model);
       });
     }
   }
@@ -51,7 +52,7 @@ class _AllRequestPageState extends State<AllRequestPage> {
             IconButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => Dashboard()));
                 },
                 icon: const Icon(Icons.arrow_back)),
             SizedBox(
@@ -60,42 +61,45 @@ class _AllRequestPageState extends State<AllRequestPage> {
             const Text("all Requests"),
           ],
         ),
-        getAllRequest.isEmpty
+        allRequest.isEmpty
             ? const Text("No request found")
             : Expanded(
                 child: ListView.builder(
-                    itemCount: getAllRequest.length,
+                    itemCount: allRequest.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const CircleAvatar(
                           radius: 30,
                         ),
-                        title: Text(getAllRequest[index].senderName!),
+                        title: Text(allRequest[index].senderName!),
                         subtitle: const Text(""),
                         trailing: ElevatedButton(
                             onPressed: () async {
                               Uuid uid = Uuid();
                               String uidone = uid.v4();
                               FriendModel model1 = FriendModel(
-                                  recieverId: getAllRequest[index].receiverId,
-                                  recieverName:
-                                      getAllRequest[index].receiverName,
+                                  recieverId: allRequest[index].receiverId,
+                                  recieverName: allRequest[index].receiverName,
                                   uniqId: uidone,
-                                  userID: getAllRequest[index].senderId);
+                                  userID: allRequest[index].senderId);
                               await FirebaseFirestore.instance
                                   .collection("Friends")
                                   .doc(uidone)
                                   .set(model1.toMap());
 
                               String uidtwo = uid.v4();
-                              FriendModel model2 = FriendModel(
-                                recieverId: getAllRequest[index].senderId,
-                                recieverName: getAllRequest[index].senderName,
+                              FriendModel modeltwo = FriendModel(
+                                recieverId: allRequest[index].senderId,
+                                recieverName: allRequest[index].senderName,
                                 uniqId: uidtwo,
-                                userID: getAllRequest[index].receiverId,
+                                userID: allRequest[index].receiverId,
                               );
+                              await FirebaseFirestore.instance
+                                  .collection("Friends")
+                                  .doc(uidtwo)
+                                  .set(modeltwo.toMap());
                               setState(() {
-                                getAllRequest.removeAt(index);
+                                allRequest.removeAt(index);
                               });
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text(

@@ -41,6 +41,7 @@ dependencies:
   google_sign_in: 
   uuid: 
   cloud_firestore: 
+  chat_bubbles: 
 
 dev_dependencies:
   flutter_test:

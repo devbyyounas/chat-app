@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -19,7 +21,8 @@ class _SettingPageState extends State<SettingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },
