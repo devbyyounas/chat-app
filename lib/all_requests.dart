@@ -98,6 +98,21 @@ class _AllRequestPageState extends State<AllRequestPage> {
                                   .collection("Friends")
                                   .doc(uidtwo)
                                   .set(modeltwo.toMap());
+
+                              QuerySnapshot snapshot = await FirebaseFirestore
+                                  .instance
+                                  .collection("request")
+                                  .where("senderId",
+                                      isEqualTo: allRequest[index].senderId)
+                                  .where("receiverId",
+                                      isEqualTo: allRequest[index].receiverId)
+                                  .get();
+                              for (var doc in snapshot.docs) {
+                                await FirebaseFirestore.instance
+                                    .collection("request")
+                                    .doc(doc.id)
+                                    .delete();
+                              }
                               setState(() {
                                 allRequest.removeAt(index);
                               });

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_project/all_requests.dart';
+import 'package:my_project/chat_screen.dart';
 import 'package:my_project/friends_model.dart';
 import 'package:my_project/model.dart';
 import 'package:my_project/sendreq_model.dart';
@@ -29,6 +30,15 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         allFriend.add(model);
       });
+    }
+  }
+
+  String chatRoomId(String user1, String user2) {
+    if (user1[0].toLowerCase().codeUnits[0] >
+        user2[0].toLowerCase().codeUnits[0]) {
+      return "$user1$user2";
+    } else {
+      return "$user2$user1";
     }
   }
 
@@ -311,31 +321,46 @@ class _HomePageState extends State<HomePage> {
                       : ListView.builder(
                           itemCount: allFriend.length,
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: const CircleAvatar(
-                                radius: 30,
+                            return InkWell(
+                              onTap: () {
+                                String chatId = chatRoomId(
+                                    StaticData.userModel!.userID!,
+                                    allFriend[index].recieverId!);
+                                print(chatId);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                            chatRoomId: chatId,
+                                            profileModel: allFriend[index])));
+                              },
+                              child: ListTile(
+                                leading: const CircleAvatar(
+                                  radius: 30,
+                                ),
+                                title:
+                                    Text(allFriend[index].recieverName ?? ''),
+                                // subtitle: Text(allFriend[index].email!),
+                                // trailing: ElevatedButton(
+                                //     onPressed: () async {
+                                //       Uuid uid = Uuid();
+                                //       String uniqueId = uid.v4();
+                                //       SendRequest sendRequest = SendRequest(
+                                //         receiverId: allUsers[index].userID,
+                                //         receiverName: allUsers[index].name,
+                                //         senderName: StaticData.userModel!.name,
+                                //         senderId: StaticData.userModel!.userID,
+                                //         uniqueId: uniqueId,
+                                //       );
+                                //       await FirebaseFirestore.instance
+                                //           .collection("request")
+                                //           .doc(uniqueId)
+                                //           .set(sendRequest.toMap());
+                                //       ScaffoldMessenger.of(context).showSnackBar(
+                                //           SnackBar(content: Text("Request send!!")));
+                                //     },
+                                //     child: const Text("Req send")),
                               ),
-                              title: Text(allFriend[index].recieverName ?? ''),
-                              // subtitle: Text(allFriend[index].email!),
-                              // trailing: ElevatedButton(
-                              //     onPressed: () async {
-                              //       Uuid uid = Uuid();
-                              //       String uniqueId = uid.v4();
-                              //       SendRequest sendRequest = SendRequest(
-                              //         receiverId: allUsers[index].userID,
-                              //         receiverName: allUsers[index].name,
-                              //         senderName: StaticData.userModel!.name,
-                              //         senderId: StaticData.userModel!.userID,
-                              //         uniqueId: uniqueId,
-                              //       );
-                              //       await FirebaseFirestore.instance
-                              //           .collection("request")
-                              //           .doc(uniqueId)
-                              //           .set(sendRequest.toMap());
-                              //       ScaffoldMessenger.of(context).showSnackBar(
-                              //           SnackBar(content: Text("Request send!!")));
-                              //     },
-                              //     child: const Text("Req send")),
                             );
                           }),
                 ),

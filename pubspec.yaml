@@ -42,6 +42,10 @@ dependencies:
   uuid: 
   cloud_firestore: 
   chat_bubbles: 
+  image_picker: 
+  firebase_storage: 
+  path: 
+  video_player: 
 
 dev_dependencies:
   flutter_test:
